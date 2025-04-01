@@ -1,5 +1,9 @@
+require 'pry'
 class Dmv
 
+  attr_reader :initialize
+  #binding.pry
+  
   def initialize
     @facilities = []
   end

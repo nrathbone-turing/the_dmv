@@ -1,5 +1,7 @@
+require 'rspec'
 require 'spec_helper'
-
+require 'pry'
+#binding.pry
 RSpec.describe Dmv do
   before(:each) do
     @dmv = Dmv.new
