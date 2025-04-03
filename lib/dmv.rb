@@ -1,7 +1,7 @@
 require 'pry'
 class Dmv
 
-  attr_reader :initialize
+  attr_reader :facilities
   #binding.pry
   
   def initialize
