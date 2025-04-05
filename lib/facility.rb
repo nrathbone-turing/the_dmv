@@ -20,6 +20,8 @@ class Facility
   end
 
   def register_vehicle(vehicle)
+
+    return nil unless services.include?('Vehicle Registration')
     
     if vehicle.antique? == true
       @collected_fees += 25
