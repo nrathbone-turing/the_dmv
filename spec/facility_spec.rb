@@ -48,36 +48,38 @@ RSpec.describe Facility do
       expect(@facility_2).to be_an_instance_of(Facility)
     end
     
-    it 'does not register a vehicle if that service is not offered' do
+    it 'does not register a vehicle if the service is not offered' do
       # based on the note from project instructions:
         # NOTE: A facility must offer a service in order to perform it. 
         # Just because the DMV allows facilities to perform certain services,
         #  does not mean that every facility provides every service.
+      
       expect(@facility_1.registered_vehicles).to eq([])
       @facility_1.register_vehicle(@cruz)
       expect(@facility_1.registered_vehicles).to eq([])
     end
     
-    it 'offers the service to register vehicles at this facility' do
+    it 'adds vehicle to registered_vehicles when registration succeeds' do
       @facility_1.add_service('Vehicle Registration')
       expect(@facility_1.services).to eq(['Vehicle Registration'])
-    end
-    
-    it 'registers a vehicle if the service is offered and sets plate type and registration date on the vehicle' do
-      @facility_1.add_service('Vehicle Registration')
-    
+
       # facility has not registered any vehicles yet
       expect(@cruz.registration_date).to eq(nil)
       expect(@facility_1.registered_vehicles).to eq([])
     
       @facility_1.register_vehicle(@cruz)
-    
-      expect(@cruz.registration_date).to eq(Date.today)
-      expect(@cruz.plate_type).to eq(:regular)
       expect(@facility_1.registered_vehicles).to eq([@cruz])
     end
 
-    it 'collects the correct fee for a regular vehicle' do
+    it 'sets registration date and plate type' do
+      @facility_1.add_service('Vehicle Registration')
+      @facility_1.register_vehicle(@cruz)
+
+      expect(@cruz.registration_date).to eq(Date.today)
+      expect(@cruz.plate_type).to eq(:regular)
+    end
+
+    it 'adds the correct fee for a regular vehicle' do
       @facility_1.add_service('Vehicle Registration')
       @facility_1.register_vehicle(@cruz)
     
