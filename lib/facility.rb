@@ -39,4 +39,18 @@ class Facility
     vehicle.registration_date = Date.today
     @registered_vehicles << vehicle
   end
+
+  def administer_written_test
+
+  end
+
+  def administer_road_test
+
+  end
+
+  def renew_drivers_license
+    
+  end
+
+
 end
