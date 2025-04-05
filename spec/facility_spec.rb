@@ -58,35 +58,32 @@ RSpec.describe Facility do
       expect(@facility_1.registered_vehicles).to eq([])
     end
     
-
-    it 'can register vehicles at this facility' do
+    it 'offers the service to register vehicles at this facility' do
       @facility_1.add_service('Vehicle Registration')
       expect(@facility_1.services).to eq(['Vehicle Registration'])
     end
     
-    it 'has not registered any vehicles yet' do
-      expect(@facility_1.registered_vehicles).to eq([])
-      expect(@facility_1.collected_fees).to eq(0)
-      
-      expect(@cruz.registration_date).to eq(nil)
-    end
+    it 'registers a vehicle if the service is offered and sets plate type and registration date on the vehicle' do
+      @facility_1.add_service('Vehicle Registration')
     
-    it 'registers a vehicle' do
+      # facility has not registered any vehicles yet
+      expect(@cruz.registration_date).to eq(nil)
+      expect(@facility_1.registered_vehicles).to eq([])
+    
       @facility_1.register_vehicle(@cruz)
-     
+    
       expect(@cruz.registration_date).to eq(Date.today)
       expect(@cruz.plate_type).to eq(:regular)
-  
       expect(@facility_1.registered_vehicles).to eq([@cruz])
+    end
+
+    it 'collects the correct fee for a regular vehicle' do
+      @facility_1.add_service('Vehicle Registration')
+      @facility_1.register_vehicle(@cruz)
+    
       expect(@facility_1.collected_fees).to eq(100)
     end
     
-    
-
-
-
-
-
   end
 
 
