@@ -1,36 +1,40 @@
 class Facility
-  attr_reader :name, :address, :phone, :services, :collected_fees
+  attr_reader :name,
+              :address,
+              :phone,
+              :services,
+              :registered_vehicles,
+              :collected_fees
 
   def initialize(facility)
     @name = facility[:name]
     @address = facility[:address]
     @phone = facility[:phone]
     @services = []
+    @registered_vehicles = []
     @collected_fees = 0
   end
 
   def add_service(service)
     @services << service
   end
-end
 
-def register_vehicle(vehicle)
-  
-  @registration_date = Date.today
-
-  if vehicle.antique? == true
-    @collected_fees + 25
-    @plate_type[:antique]
-    @registered_vehicles << vehicle
+  def register_vehicle(vehicle)
     
-  elsif vehicle.electric_vehicle? == true
-    @collected_fees + 200
-    @plate_type[:ev]
-    @registered_vehicles << vehicle
-  
-  else vehicle
-    @collected_fees + 100
-    @plate_type[:basic]
+    if vehicle.antique? == true
+      @collected_fees += 25
+      vehicle.plate_type = :antique
+            
+    elsif vehicle.electric_vehicle? == true
+      @collected_fees += 200
+      vehicle.plate_type = :ev
+          
+    else
+      @collected_fees += 100
+      vehicle.plate_type = :regular
+    end
+
+    vehicle.registration_date = Date.today
     @registered_vehicles << vehicle
   end
 end
