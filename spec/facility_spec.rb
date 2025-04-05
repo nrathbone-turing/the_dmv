@@ -57,6 +57,13 @@ RSpec.describe Facility do
       expect(@facility_1.registered_vehicles).to eq([])
       @facility_1.register_vehicle(@cruz)
       expect(@facility_1.registered_vehicles).to eq([])
+
+      expect(@facility_2.services).to eq([])
+      expect(@facility_2.registered_vehicles).to eq([])
+      expect(@facility_2.register_vehicle(@bolt)).to eq(nil)
+      expect(@facility_2.registered_vehicles).to eq([])
+      expect(@facility_2.collected_fees).to eq(0)
+
     end
     
     it 'adds vehicle to registered_vehicles when registration succeeds' do
@@ -77,6 +84,15 @@ RSpec.describe Facility do
 
       expect(@cruz.registration_date).to eq(Date.today)
       expect(@cruz.plate_type).to eq(:regular)
+
+      @facility_1.register_vehicle(@camaro)
+
+      expect(@camaro.registration_date).to eq(Date.today)
+      expect(@camaro.plate_type).to eq(:antique)
+
+      @facility_1.register_vehicle(@bolt)
+      expect(@bolt.registration_date).to eq(Date.today)
+      expect(@bolt.plate_type).to eq(:ev)
     end
 
     it 'adds the correct fee for a regular vehicle' do
@@ -85,7 +101,41 @@ RSpec.describe Facility do
     
       expect(@facility_1.collected_fees).to eq(100)
     end
+
+    it 'adds the correct fee for an antique vehicle' do
+      @facility_1.add_service('Vehicle Registration')
+      @facility_1.register_vehicle(@camaro)
     
+      expect(@facility_1.collected_fees).to eq(25)
+    end
+
+    it 'adds the correct fee for an electric vehicle' do
+      @facility_1.add_service('Vehicle Registration')
+      @facility_1.register_vehicle(@bolt)
+    
+      expect(@facility_1.collected_fees).to eq(200)
+    end
+    
+    it 'adds all successfully registered vehicles to registered_vehicles' do
+      @facility_1.add_service('Vehicle Registration')
+         
+      @facility_1.register_vehicle(@cruz)
+      @facility_1.register_vehicle(@camaro)
+      @facility_1.register_vehicle(@bolt)
+
+      expect(@facility_1.registered_vehicles).to eq([@cruz, @camaro, @bolt])
+    end
+
+    it 'sums the fees collected for each vehicle in registered_vehicles' do
+      @facility_1.add_service('Vehicle Registration')
+      @facility_1.register_vehicle(@cruz)
+      @facility_1.register_vehicle(@camaro)
+      @facility_1.register_vehicle(@bolt)
+    
+      expect(@facility_1.collected_fees).to eq(325)
+    end
+
+
   end
 
 
