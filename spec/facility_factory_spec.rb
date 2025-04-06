@@ -16,19 +16,19 @@ RSpec.describe FacilityFactory do
   it 'exists' do
     expect(@facility_factory).to be_an_instance_of(FacilityFactory)
     
-    #@co_facilities is an array of hashes, where each hash represents an individual facility record
+    #@co_dmv_office_locations is an array of hashes, where each hash represents an individual facility record
     #from the Colorado DMV Office Locations external data source
     expect(@co_dmv_office_locations).to be_an(Array)
 
     #printing return value for the first element in the @co_dmv_office_locations array to make sure it works
-    #p @co_dmv_office_locations[0]
+    p @co_dmv_office_locations[0]
     #=> {:the_geom=>{:type=>"Point", :coordinates=>[-104.97443112500002, 39.75525297420336]}, :dmv_id=>"1", :dmv_office=>"DMV Tremont Branch",
     # :address_li=>"2855 Tremont Place", :address__1=>"Suite 118", :city=>"Denver", :state=>"CO", :zip=>"80205", :phone=>"(720) 865-4600",
     # :hours=>"Mon, Tue, Thur, Fri  8:00 a.m.- 4:30 p.m. / Wed 8:30 a.m.-4:30 p.m.", :services_p=>"vehicle titles, registration, renewals; VIN inspections",
     # :parking_no=>"parking available in the lot at the back of the bldg (Glenarm Street)", :photo=>"images/Tremont.jpg", :address_id=>"175164", :":@computed_region_nku6_53ud"=>"1444"}
-    #binding.pry
+    
     #printing the return value for all of the keys within the hash of the first facility record element in the @co_dmv_office_locations array to make sure the mapping logic is using the correct keys
-    #p @co_dmv_office_locations[0].keys
+    p @co_dmv_office_locations[0].keys
     #=> [:the_geom, :dmv_id, :dmv_office, :address_li, :address__1, :city, :state, :zip, :phone, :hours, :services_p, :parking_no, :photo, :address_id, :":@computed_region_nku6_53ud"]
   end
   
@@ -38,11 +38,11 @@ RSpec.describe FacilityFactory do
     expect(@facilities).to be_an(Array)
     expect(@facilities[0]).to be_a(Facility)
 
-    #p @facilities[0]
+    p @facilities[0]
     #=> #<Facility:0x0000000105e924a0 @name="DMV Tremont Branch", @address="2855 Tremont Place Suite 118 Denver CO 80205", @phone="(720) 865-4600", @services=[], @registered_vehicles=[], @collected_fees=0>
   end
 
-  it 'correctly creates Colorado facility objects from external data source' do
+  it 'correctly creates Colorado facility objects from external Colorado data source' do
     @colorado_facilities = @facility_factory.create_co_facilities(@co_dmv_office_locations)
 
     expect(@colorado_facilities).to be_an(Array)
@@ -52,7 +52,7 @@ RSpec.describe FacilityFactory do
     #=> #<Facility:0x0000000105e924a0 @name="DMV Tremont Branch", @address="2855 Tremont Place Suite 118 Denver CO 80205", @phone="(720) 865-4600", @services=[], @registered_vehicles=[], @collected_fees=0>
   end
 
-  it 'correctly creates New York facility objects from external data source' do
+  it 'correctly creates New York facility objects from external New York data source' do
     
     @new_york_facilities = @facility_factory.create_ny_facilities(@ny_dmv_office_locations)
 
@@ -71,10 +71,10 @@ RSpec.describe FacilityFactory do
     # :georeference, :":@computed_region_yamh_8v7k", :":@computed_region_wbg7_3whc", :":@computed_region_kjdx_g34t"]
 
     p @new_york_facilities[0]
-    #=> 
+    #=> <Facility:0x0000000103c8f970 @name="LAKE PLACID", @address="2693 MAIN STREET  LAKE PLACID NY 12946", @phone=nil, @services=[], @registered_vehicles=[], @collected_fees=0>
   end
 
-  it 'correctly creates Missouri facility objects from external data source' do
+  it 'correctly creates Missouri facility objects from external Missouri data source' do
     @missouri_facilities = @facility_factory.create_mo_facilities(@mo_dmv_office_locations)
 
     expect(@missouri_facilities).to be_an(Array)
@@ -95,7 +95,7 @@ RSpec.describe FacilityFactory do
     # :daysopen, :daysclosed, :holidaysclosed, :additionaldaysclosed, :latlng, :":@computed_region_ny2h_ckbz", :":@computed_region_c8ar_jsdj", :":@computed_region_ikxf_gfzr"]
 
     p @missouri_facilities[0]
-    #=> 
+    #=> #<Facility:0x00000001042a8bb8 @name="Sarcoxie", @address="111 N 6th  Sarcoxie MO 64862", @phone="(417) 548-7332", @services=[], @registered_vehicles=[], @collected_fees=0>
   end
 
 

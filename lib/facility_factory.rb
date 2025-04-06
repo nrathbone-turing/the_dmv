@@ -28,6 +28,7 @@ class FacilityFactory
       :address => full_address,
       :phone => facility_record[:phone]
       })
+    end
   end
 
   #method for the facility factory using only the New York dataset
@@ -40,6 +41,7 @@ class FacilityFactory
         :address => full_address,
         :phone => facility_record[:phone]
       })
+    end
   end
 
   #method for the facility factory using only the Missouri dataset
@@ -52,17 +54,8 @@ class FacilityFactory
       :address => full_address,
       :phone => facility_record[:phone]
       })
+    end
   end
-
-
-
-
-
-
-
-
-
-
 
   #not sure if we need to do this or not, add services to our objects too or if just returning the above data is enough
   #it also seems that not all of the facilities have the services provided at that location in the external data set
@@ -76,6 +69,5 @@ class FacilityFactory
   #     facility.add_service(service)
   #   end
   # end
-
 
 end
