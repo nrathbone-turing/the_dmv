@@ -19,7 +19,12 @@ RSpec.describe VehicleFactory do
 
     expect(vehicles).to be_an(Array)
     expect(vehicles[0]).to be_a(Vehicle)
-    expect(vehicles[0][:engine]).to eq(:ev)
+
+    #since the external database is made up of only electric vehicles, we're hard-coding the :engine value as :ev for each vehicle created in the vehicle factory
+    #when we pass that value (:engine => :ev) into the hash used for each new Vehicle object, it becomes part of the vehicle_details hash argument that gets passed into the Vehicle class's initialize method
+    #and because we assign that value to an instance variable within that initialize method (@engine = vehicle_details[:engine]), and because the create_vehicles method in the VehicleFactory class returns an array of Vehicle objects,
+    #we can call the .engine method on any Vehicle object in that array, accessing the @engine instance variable and returning a value of :ev
+    expect(vehicles[0].engine).to eq(:ev)
   end
 
 
