@@ -37,20 +37,20 @@ class Facility
     @registered_vehicles << vehicle
   end
 
-  def administer_written_test
-    return false unless @registrant.age >= 16
-    @registrant.license_data[:written] = true
+  def administer_written_test(registrant)
+    return false unless registrant.age >= 16
+    registrant.license_data[:written] = true
   end
 
-  def administer_road_test
-    return false unless @registrant.license_data[:written] == true
-    @registrant.license_data[:license] = true
+  def administer_road_test(registrant)
+    return false unless registrant.license_data[:written] == true
+    registrant.license_data[:license] = true
   end
 
-  def renew_drivers_license
+  def renew_drivers_license(registrant)
     return false unless 
-      @registrant.license_data[:written] = true && @registrant.license_data[:license] = true
-      @registrant.license_data[:renewed] = true
+      registrant.license_data[:written] = true && @registrant.license_data[:license] = true
+      registrant.license_data[:renewed] = true
   end
 
 
