@@ -12,3 +12,8 @@
 #
 # Vehicles:
 ### Add in a second data source for vehicles and create some Vehicle objects from NY State Registration Data: https://data.ny.gov/resource/w4pv-hbkt.json
+
+
+module DataAnalytics
+  
+end
