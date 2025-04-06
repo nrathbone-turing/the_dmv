@@ -16,6 +16,8 @@ class Registrant
     @permit = true
   end
   
+  def permit?
+    @permit
+  end
 
-  
 end
