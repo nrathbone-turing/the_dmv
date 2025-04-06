@@ -38,19 +38,29 @@ class Facility
   end
 
   def administer_written_test(registrant)
+    return false unless services.include?('Written Test')
     return false unless registrant.age >= 16
+    return false unless registrant.permit? == true
+    
     registrant.license_data[:written] = true
+    return true
   end
 
   def administer_road_test(registrant)
+    return false unless services.include?('Road Test')
     return false unless registrant.license_data[:written] == true
+    
     registrant.license_data[:license] = true
+    return true
   end
 
   def renew_drivers_license(registrant)
-    return false unless 
-      registrant.license_data[:written] == true && registrant.license_data[:license] == true
-      registrant.license_data[:renewed] = true
+    return false unless services.include?('Renew License')
+    return false unless registrant.license_data[:written] == true
+    return false unless registrant.license_data[:license] == true
+    
+    registrant.license_data[:renewed] = true
+    return true
   end
 
 
