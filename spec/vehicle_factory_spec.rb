@@ -9,12 +9,17 @@ RSpec.describe VehicleFactory do
 
   it 'exists' do
     expect(@factory).to be_an_instance_of(VehicleFactory)
-    # @wa_ev_registrations returns an array of hashes as a collection individual vehicle key/value pairs
+    # @wa_ev_registrations is an array of hashes, where each hash represents an individual vehicle record
+    # from the Washington State EV Vehicle Registration external data source
     expect(@wa_ev_registrations).to be_an(Array)
   end
 
-  it 'returns a collection of vehicles from external database as an array of hashes' do
-    expect(factory.create_vehicles(@wa_ev_registrations)).to eq([])
+  it 'creates vehicle objects from external data source' do
+    vehicles = @factory.create_vehicles(@wa_ev_registrations)
+
+    expect(vehicles).to be_an(Array)
+    expect(vehicles[0]).to be_a(Vehicle)
+    expect(vehicles[0][:engine]).to eq(:ev)
   end
 
 
