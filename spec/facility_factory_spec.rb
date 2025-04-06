@@ -71,7 +71,7 @@ RSpec.describe FacilityFactory do
     # :georeference, :":@computed_region_yamh_8v7k", :":@computed_region_wbg7_3whc", :":@computed_region_kjdx_g34t"]
 
     p @new_york_facilities[0]
-    #=> #<Facility:0x0000000105e924a0 @name="DMV Tremont Branch", @address="2855 Tremont Place Suite 118 Denver CO 80205", @phone="(720) 865-4600", @services=[], @registered_vehicles=[], @collected_fees=0>
+    #=> 
   end
 
   it 'correctly creates Missouri facility objects from external data source' do
@@ -95,7 +95,7 @@ RSpec.describe FacilityFactory do
     # :daysopen, :daysclosed, :holidaysclosed, :additionaldaysclosed, :latlng, :":@computed_region_ny2h_ckbz", :":@computed_region_c8ar_jsdj", :":@computed_region_ikxf_gfzr"]
 
     p @missouri_facilities[0]
-    #=> #<Facility:0x0000000105e924a0 @name="DMV Tremont Branch", @address="2855 Tremont Place Suite 118 Denver CO 80205", @phone="(720) 865-4600", @services=[], @registered_vehicles=[], @collected_fees=0>
+    #=> 
   end
 
 
