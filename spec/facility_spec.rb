@@ -163,20 +163,22 @@ RSpec.describe Facility do
 
       #--
       expect(@registrant_2.age).to eq()
-      @registrant_2.permit?
-      @facility_1.administer_written_test(@registrant_2)
+      expect(@registrant_2.permit?).to eq(false)
+      expect(@facility_1.administer_written_test(@registrant_2)).to eq(false)
       
       @registrant_2.earn_permit
-      @facility_1.administer_written_test(@registrant_2)
-      @registrant_2.license_data
-      #--
-      @registrant_3.age
-      @registrant_3.permit?
-      @facility_1.administer_written_test(@registrant_3)
       
+      expect(@facility_1.administer_written_test(@registrant_2)).to eq(true)
+      expect(@registrant_2.license_data).to eq({})
+      #--
+      expect(@registrant_3.age).to (eq)
+      expect(@registrant_3.permit?).to eq(false)
+      expect(@facility_1.administer_written_test(@registrant_3)).to eq(false)
+
       @registrant_3.earn_permit
-      @facility_1.administer_written_test(@registrant_3)
-      @registrant_3.license_data
+
+      expect(@facility_1.administer_written_test(@registrant_3)).to eq(false)
+      expect(@registrant_3.license_data).to eq({})
 
     end
 
@@ -187,7 +189,7 @@ RSpec.describe Facility do
       @registrant_3.earn_permit
 
       expect(@facility_1.administer_road_test(@registrant_3)).to eq(false)
-      expect(@registrant_3.license_data).to eq()
+      expect(@registrant_3.license_data).to eq({})
 
       #--
       expect(@facility_1.administer_road_test(@registrant_1)).to eq(false)
@@ -195,21 +197,36 @@ RSpec.describe Facility do
       @facility_1.add_service('Road Test')
 
       expect(@facility_1.administer_road_test(@registrant_1)).to eq(true)
-      expect(@registrant_1.license_data).to eq()
+      expect(@registrant_1.license_data).to eq({})
 
       #--
       #@registrant_2.earn_permit
       @facility_1.administer_road_test(@registrant_2)
       
-      expect(@registrant_2.license_data).to eq()
+      expect(@registrant_2.license_data).to eq({})
 
 
     end
 
     it 'renews a drivers license' do
 
+      expect(@facility_1.renew_drivers_license(@registrant_1)).to eq(false)
 
+      @facility_1.add_service('Renew License')
 
+      expect(@facility_1.renew_drivers_license(@registrant_1)).to eq(true)
+
+      expect(@registrant_1.license_data).to eq({})
+
+      #--
+      expect(@facility_1.renew_drivers_license(@registrant_3)).to eq(false)
+      
+      expect(@registrant_3.license_data).to eq({})
+
+      #--
+      expect@(facility_1.renew_drivers_license(registrant_2)).to eq(true)
+
+      expect(@registrant_2.license_data).to eq({})
     end
   end
 
