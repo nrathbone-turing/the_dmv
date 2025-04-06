@@ -57,20 +57,4 @@ class FacilityFactory
     end
   end
 
-  #refactor note for building the full_address strings: chat with instructors about using compact.join(" ")
-  #to see if it makes sense here or not based on how i'm checking all keys in all hashes in the array
-
-  #not sure if we need to do this or not, add services to our objects too or if just returning the above data is enough
-  #it also seems that not all of the facilities have the services provided at that location in the external data set
-  
-  #transforms the hash key values from the facility record for services offered from a single string
-  #into an array of strings that matches what the Facility class expects and can pass as a valid argument for the :services parameter
-  # def transform_services(external_dataset)
-    
-  #   transform_services(@facility_record).split(' ')
-  #   transform_services(@facility_record[:services_p]).each do |service|
-  #     facility.add_service(service)
-  #   end
-  # end
-
 end
