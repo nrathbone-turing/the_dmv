@@ -38,6 +38,7 @@ class Facility
   end
 
   def administer_written_test(registrant)
+    #binding.pry
     return false unless services.include?('Written Test')
     return false unless registrant.age >= 16
     return false unless registrant.permit? == true
