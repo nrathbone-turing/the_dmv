@@ -18,6 +18,52 @@ class FacilityFactory
     "#{raw_location_data[:address_li]} #{raw_location_data[:address__1]} #{raw_location_data[:city]} #{raw_location_data[:state]} #{raw_location_data[:zip]}"
   end
 
+  #method for the facility factory using only the Colorado dataset
+  def create_co_facilities(external_dataset)
+    external_dataset.map do |facility_record|
+      full_address = "#{facility_record[:address_li]} #{facility_record[:address__1]} #{facility_record[:city]} #{facility_record[:state]} #{facility_record[:zip]}"
+      
+      Facility.new({
+      :name => facility_record[:dmv_office],
+      :address => full_address,
+      :phone => facility_record[:phone]
+      })
+  end
+
+  #method for the facility factory using only the New York dataset
+  def create_ny_facilities(external_dataset)
+    external_dataset.map do |facility_record|
+      full_address = "#{facility_record[:street_address_line_1]} #{facility_record[:street_address_line_2]} #{facility_record[:city]} #{facility_record[:state]} #{facility_record[:zip_code]}" 
+      
+      Facility.new({
+        :name => facility_record[:office_name],
+        :address => full_address,
+        :phone => facility_record[:phone]
+      })
+  end
+
+  #method for the facility factory using only the Missouri dataset
+  def create_mo_facilities(external_dataset)
+    external_dataset.map do |facility_record|
+      full_address = "#{facility_record[:address1]} #{facility_record[:address2]} #{facility_record[:city]} #{facility_record[:state]} #{facility_record[:zipcode]}"
+      
+      Facility.new({
+      :name => facility_record[:name],
+      :address => full_address,
+      :phone => facility_record[:phone]
+      })
+  end
+
+
+
+
+
+
+
+
+
+
+
   #not sure if we need to do this or not, add services to our objects too or if just returning the above data is enough
   #it also seems that not all of the facilities have the services provided at that location in the external data set
   

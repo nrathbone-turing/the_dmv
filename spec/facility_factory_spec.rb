@@ -8,9 +8,9 @@ RSpec.describe FacilityFactory do
     @ny_dmv_office_locations = DmvDataService.new.ny_dmv_office_locations
     @mo_dmv_office_locations = DmvDataService.new.mo_dmv_office_locations
 
-    @colorado_facilities = @facility_factory.create_facilities(@co_dmv_office_locations)
-    @new_york_facilities = @facility_factory.create_facilities(@ny_dmv_office_locations)
-    @missouri_facilities = @facility_factory.create_facilities(@mo_dmv_office_locations)
+    @colorado_facilities = @facility_factory.create_co_facilities(@co_dmv_office_locations)
+    @new_york_facilities = @facility_factory.create_ny_facilities(@ny_dmv_office_locations)
+    @missouri_facilities = @facility_factory.create_mo_facilities(@mo_dmv_office_locations)
   end
 
   it 'exists' do
@@ -43,7 +43,7 @@ RSpec.describe FacilityFactory do
   end
 
   it 'correctly creates Colorado facility objects from external data source' do
-    @colorado_facilities = @facility_factory.create_facilities(@co_dmv_office_locations)
+    @colorado_facilities = @facility_factory.create_co_facilities(@co_dmv_office_locations)
 
     expect(@colorado_facilities).to be_an(Array)
     expect(@colorado_facilities[0]).to be_a(Facility)
@@ -54,7 +54,7 @@ RSpec.describe FacilityFactory do
 
   it 'correctly creates New York facility objects from external data source' do
     
-    @new_york_facilities = @facility_factory.create_facilities(@ny_dmv_office_locations)
+    @new_york_facilities = @facility_factory.create_ny_facilities(@ny_dmv_office_locations)
 
     expect(@new_york_facilities).to be_an(Array)
     expect(@new_york_facilities[0]).to be_a(Facility)
@@ -75,7 +75,7 @@ RSpec.describe FacilityFactory do
   end
 
   it 'correctly creates Missouri facility objects from external data source' do
-    @missouri_facilities = @facility_factory.create_facilities(@mo_dmv_office_locations)
+    @missouri_facilities = @facility_factory.create_mo_facilities(@mo_dmv_office_locations)
 
     expect(@missouri_facilities).to be_an(Array)
     expect(@missouri_facilities[0]).to be_a(Facility)
