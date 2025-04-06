@@ -21,7 +21,7 @@ RSpec.describe FacilityFactory do
     expect(@co_dmv_office_locations).to be_an(Array)
 
     #printing return value for the first element in the @co_dmv_office_locations array to make sure it works
-    p @co_dmv_office_locations[0]
+    #p @co_dmv_office_locations[0]
     #=> {:the_geom=>{:type=>"Point", :coordinates=>[-104.97443112500002, 39.75525297420336]}, :dmv_id=>"1", :dmv_office=>"DMV Tremont Branch",
     # :address_li=>"2855 Tremont Place", :address__1=>"Suite 118", :city=>"Denver", :state=>"CO", :zip=>"80205", :phone=>"(720) 865-4600",
     # :hours=>"Mon, Tue, Thur, Fri  8:00 a.m.- 4:30 p.m. / Wed 8:30 a.m.-4:30 p.m.", :services_p=>"vehicle titles, registration, renewals; VIN inspections",
