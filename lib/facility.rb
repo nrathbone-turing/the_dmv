@@ -49,7 +49,7 @@ class Facility
 
   def renew_drivers_license(registrant)
     return false unless 
-      registrant.license_data[:written] = true && @registrant.license_data[:license] = true
+      registrant.license_data[:written] == true && registrant.license_data[:license] == true
       registrant.license_data[:renewed] = true
   end
 
