@@ -1,5 +1,5 @@
 require 'spec_helper'
-binding.pry
+#binding.pry
 RSpec.describe VehicleFactory do
 
   before(:each) do
@@ -9,7 +9,8 @@ RSpec.describe VehicleFactory do
 
   it 'exists' do
     expect(@factory).to be_an_instance_of(VehicleFactory)
-    expect(@wa_ev_registrations).to be_an_instance_of(DmvDataService)
+    # @wa_ev_registrations returns an array of hashes as a collection individual vehicle key/value pairs
+    expect(@wa_ev_registrations).to be_an(Array)
   end
 
   it 'returns a collection of vehicles from external database as an array of hashes' do
