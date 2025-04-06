@@ -34,7 +34,7 @@ class FacilityFactory
   #method for the facility factory using only the New York dataset
   def create_ny_facilities(external_dataset)
     external_dataset.map do |facility_record|
-      full_address = "#{facility_record[:street_address_line_1]} #{facility_record[:street_address_line_2]} #{facility_record[:city]} #{facility_record[:state]} #{facility_record[:zip_code]}" 
+      full_address = "#{facility_record[:street_address_line_1]} #{facility_record[:city]} #{facility_record[:state]} #{facility_record[:zip_code]}" 
       
       Facility.new({
         :name => facility_record[:office_name],
@@ -47,7 +47,7 @@ class FacilityFactory
   #method for the facility factory using only the Missouri dataset
   def create_mo_facilities(external_dataset)
     external_dataset.map do |facility_record|
-      full_address = "#{facility_record[:address1]} #{facility_record[:address2]} #{facility_record[:city]} #{facility_record[:state]} #{facility_record[:zipcode]}"
+      full_address = "#{facility_record[:address1]} #{facility_record[:city]} #{facility_record[:state]} #{facility_record[:zipcode]}"
       
       Facility.new({
       :name => facility_record[:name],
