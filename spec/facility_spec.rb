@@ -249,6 +249,7 @@ RSpec.describe Facility do
         expect(@registrant_3.license_data).to eq({:written=>false, :license=>false, :renewed=>false})
 
         #registrant_2 also passed both written and road tests, earned a licenese, and had it renewed successfully and the license data is updated to reflect this
+        @registrant_2.earn_permit
         @facility_1.administer_written_test(@registrant_2)
         @facility_1.administer_road_test(@registrant_2)
         
