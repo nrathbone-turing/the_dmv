@@ -39,7 +39,7 @@ class FacilityFactory
       Facility.new({
         :name => facility_record[:office_name],
         :address => full_address,
-        :phone => facility_record[:phone]
+        :phone => facility_record[:public_phone_number]
       })
     end
   end
