@@ -14,6 +14,13 @@ RSpec.describe FacilityFactory do
     @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
 
     expect(@co_dmv_office_locations).to be_an(Array)
+    expect(@co_dmv_office_locations[0][:dmv_office]).to eq("DMV Tremont Branch")
+    expect(@co_dmv_office_locations[0][:phone]).to eq("(720) 865-4600")
+    expect(@co_dmv_office_locations[0][:address_li]).to eq("2855 Tremont Place")
+    expect(@co_dmv_office_locations[0][:address__1]).to eq("Suite 118")
+    expect(@co_dmv_office_locations[0][:city]).to eq("Denver")
+    expect(@co_dmv_office_locations[0][:state]).to eq("CO")
+    expect(@co_dmv_office_locations[0][:zip]).to eq("80205")
 
     #printing return value for the first element in the @co_dmv_office_locations array to make sure it works
     #p @co_dmv_office_locations[0]
@@ -31,15 +38,41 @@ RSpec.describe FacilityFactory do
     #=> [:the_geom, :dmv_id, :dmv_office, :address_li, :address__1, :city, :state, :zip, :phone, :hours, :services_p, :parking_no, :photo, :address_id, :":@computed_region_nku6_53ud", :location]
   end
   
-  it 'correctly creates facility objects from external data source' do
+  it 'has the expected raw address data in the external dataset needed for transformation' do
+    @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
+    @facilities = @facility_factory.create_facilities(@co_dmv_office_locations)
+
+    raw_location_data = @co_dmv_office_locations[0]
+
+    expect(raw_location_data[:address_li]).to eq("2855 Tremont Place")
+    expect(raw_location_data[:address__1]).to eq("Suite 118")
+    expect(raw_location_data[:city]).to eq("Denver")
+    expect(raw_location_data[:state]).to eq("CO")
+    expect(raw_location_data[:zip]).to eq("80205")
+    
+  end
+
+  it 'builds a full address string from the raw using the full_address helper method' do
+    @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
+    @facilities = @facility_factory.create_facilities(@co_dmv_office_locations)
+
+    raw_location_data = @co_dmv_office_locations[0]
+    
+    expect(@facility_factory.full_address(raw_location_data)).to eq("#{@co_dmv_office_locations[0][:address_li]} #{@co_dmv_office_locations[0][:address__1]} #{@co_dmv_office_locations[0][:city]} #{@co_dmv_office_locations[0][:state]} #{@co_dmv_office_locations[0][:zip]}")
+    expect(@facility_factory.full_address(raw_location_data)).to eq("2855 Tremont Place Suite 118 Denver CO 80205")
+  end
+
+  it 'correctly creates facility objects with transformed address from external sources raw data' do
     @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
     @facilities = @facility_factory.create_facilities(@co_dmv_office_locations)
 
     expect(@facilities).to be_an(Array)
     expect(@facilities[0]).to be_a(Facility)
     
-    expect(@facilities[0].name).to eq("DMV Tremont Branch")
-
+    expect(@facilities[0].name).to eq(@co_dmv_office_locations[0][:dmv_office])
+    expect(@facilities[0].phone).to eq(@co_dmv_office_locations[0][:phone])
+    expect(@facilities[0].address).to eq("2855 Tremont Place Suite 118 Denver CO 80205")
+    
     #p @facilities[0]
     #=> #<Facility:0x0000000105e924a0 @name="DMV Tremont Branch", @address="2855 Tremont Place Suite 118 Denver CO 80205", @phone="(720) 865-4600", @services=[], @registered_vehicles=[], @collected_fees=0>
   end
