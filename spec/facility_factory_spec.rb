@@ -12,7 +12,7 @@ RSpec.describe FacilityFactory do
       @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
       
       #for testing multiple elements at different index positions; this should avoid the first/last element and randomly pick one from the remaining elements
-      @random_middle_index = rand(1..@co_dmv_office_locations.length - 2)
+      #@random_middle_index = rand(1..ny.length - 2)
       #pry(main)> @random_middle_index
       #=> 2
       @random_middle_index = 2
@@ -41,7 +41,7 @@ RSpec.describe FacilityFactory do
       @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
       
       #for testing multiple elements at different index positions; this should avoid the first/last element and randomly pick one from the remaining elements
-      @random_middle_index = rand(1..@co_dmv_office_locations.length - 2)
+      #@random_middle_index = rand(1..@co_dmv_office_locations.length - 2)
       #pry(main)> @random_middle_index
       #=> 2
       @random_middle_index = 2
@@ -117,7 +117,7 @@ RSpec.describe FacilityFactory do
       @colorado_facilities = @facility_factory.create_co_facilities(@co_dmv_office_locations)
 
       #for testing multiple elements at different index positions; this should avoid the first/last element and randomly pick one from the remaining elements
-      @random_middle_index = rand(1..@co_dmv_office_locations.length - 2)
+      #@random_middle_index = rand(1..@co_dmv_office_locations.length - 2)
       #pry(main)> @random_middle_index
       #=> 2
       @random_middle_index = 2
@@ -165,6 +165,139 @@ RSpec.describe FacilityFactory do
       
       #pry(main)> @colorado_facilities[2]
       #=> #<Facility:0x0000000105574620 @address="3698 W. 44th Avenue  Denver CO 80211", @collected_fees=0, @name="DMV Northwest Branch", @phone="(720) 865-4600", @registered_vehicles=[], @services=[]>
+    end
+
+  end
+
+  describe 'raw New York DMV Office Locations data' do
+    
+    before(:each) do
+      @ny_dmv_office_locations = DmvDataService.new.ny_dmv_office_locations
+      
+      #for testing multiple elements at different index positions; this should avoid the first/last element and randomly pick one from the remaining elements
+      #@random_middle_index = rand(1..@ny_dmv_office_locations.length - 2)
+      #pry(main)> @random_middle_index
+      #=> 169
+      @random_middle_index = 169
+    end
+
+    it 'is an array of facility hashes' do
+      expect(@ny_dmv_office_locations).to be_an(Array)
+      
+      #@ny_dmv_office_locations is an array of hashes, where each hash represents an individual facility record
+      #from the Colorado DMV Office Locations external data source
+      
+      #testing the return value for all of the keys used by any hash within the array of facility hashes to make sure I am accounting for multiple address lines or other differences that may exist between first element and others
+      #pry(main)> @ny_dmv_office_locations.flat_map { |facility_record| facility_record.keys }.uniq
+      # => [:office_name, :office_type, :street_address_line_1, :city, :state, :zip_code, :monday_beginning_hours, :monday_ending_hours,
+      # :georeference, :":@computed_region_yamh_8v7k", :":@computed_region_wbg7_3whc", :":@computed_region_kjdx_g34t", :public_phone_number,
+      # :tuesday_beginning_hours, :tuesday_ending_hours, :wednesday_beginning_hours, :wednesday_ending_hours, :thursday_beginning_hours, :thursday_ending_hours,
+      # :friday_beginning_hours, :friday_ending_hours, :street_address_line_2, :public_phone_extension, :saturday_beginning_hours, :saturday_ending_hours]
+    end
+    
+    it 'contains expected values for the first facility_record element' do
+      
+      expect(@ny_dmv_office_locations[0][:office_name]).to eq("LAKE PLACID")
+      expect(@ny_dmv_office_locations[0][:phone]).to eq(nil)
+      expect(@ny_dmv_office_locations[0][:street_address_line_1]).to eq("2693 MAIN STREET")
+      expect(@ny_dmv_office_locations[0][:city]).to eq("LAKE PLACID")
+      expect(@ny_dmv_office_locations[0][:state]).to eq("NY")
+      expect(@ny_dmv_office_locations[0][:zip_code]).to eq("12946")
+      
+      #pry(main)> @ny_dmv_office_locations[0]
+      #=> {:office_name=>"LAKE PLACID", :office_type=>"COUNTY OFFICE", :street_address_line_1=>"2693 MAIN STREET", :city=>"LAKE PLACID", :state=>"NY", :zip_code=>"12946",
+      # :monday_beginning_hours=>"CLOSED", :monday_ending_hours=>"CLOSED", :georeference=>{:type=>"Point", :coordinates=>[-73.98278, 44.28213]}, :":@computed_region_yamh_8v7k"=>"430", 
+      # :":@computed_region_wbg7_3whc"=>"275", :":@computed_region_kjdx_g34t"=>"2084"}
+    end
+
+    it 'contains expected values for the last facility_record element' do
+      
+      expect(@ny_dmv_office_locations[-1][:office_name]).to eq("MIDDLETOWN")
+      expect(@ny_dmv_office_locations[-1][:phone]).to eq("8453461180")
+      expect(@ny_dmv_office_locations[-1][:street_address_line_1]).to eq("12 KING STREET")
+      expect(@ny_dmv_office_locations[-1][:city]).to eq("MIDDLETOWN")
+      expect(@ny_dmv_office_locations[-1][:state]).to eq("NY")
+      expect(@ny_dmv_office_locations[-1][:zip_code]).to eq("10940")
+      
+      #pry(main)> @ny_dmv_office_locations[-1]
+      #=> {:office_name=>"MIDDLETOWN", :office_type=>"COUNTY OFFICE", :public_phone_number=>"8453461180", :street_address_line_1=>"12 KING STREET", :city=>"MIDDLETOWN", :state=>"NY", :zip_code=>"10940",
+      # :monday_beginning_hours=>"9:00 AM", :monday_ending_hours=>"4:00 PM", :tuesday_beginning_hours=>"9:00 AM", :tuesday_ending_hours=>"4:00 PM", :wednesday_beginning_hours=>"9:00 AM",
+      # :wednesday_ending_hours=>"7:00 PM", :thursday_beginning_hours=>"9:00 AM", :thursday_ending_hours=>"4:00 PM", :friday_beginning_hours=>"9:00 AM", :friday_ending_hours=>"4:00 PM",
+      # :georeference=>{:type=>"Point", :coordinates=>[-74.42079, 41.4456]}, :":@computed_region_yamh_8v7k"=>"873", :":@computed_region_wbg7_3whc"=>"1540", :":@computed_region_kjdx_g34t"=>"2134"}
+    end
+
+    it 'contains expected values for a middle facility_record element' do
+      
+      expect(@ny_dmv_office_locations[169][:office_name]).to eq("NORTH SYRACUSE KIOSK")
+      expect(@ny_dmv_office_locations[169][:phone]).to eq(nil)
+      expect(@ny_dmv_office_locations[169][:street_address_line_1]).to eq("5801 E. TAFT ROAD")
+      expect(@ny_dmv_office_locations[169][:city]).to eq("NORTH SYRACUSE")
+      expect(@ny_dmv_office_locations[169][:state]).to eq("NY")
+      expect(@ny_dmv_office_locations[169][:zip_code]).to eq("13212")
+      
+      #pry(main)> @ny_dmv_office_locations[169]
+      #=> {:office_name=>"NORTH SYRACUSE KIOSK", :office_type=>"DISTRICT OFFICE", :street_address_line_1=>"5801 E. TAFT ROAD", :city=>"NORTH SYRACUSE", :state=>"NY", :zip_code=>"13212",
+      # :monday_beginning_hours=>"7:30 AM", :monday_ending_hours=>"5:00 PM", :tuesday_beginning_hours=>"7:30 AM", :tuesday_ending_hours=>"5:00 PM", :wednesday_beginning_hours=>"7:30 AM",
+      # :wednesday_ending_hours=>"5:00 PM", :thursday_beginning_hours=>"7:30 AM", :thursday_ending_hours=>"5:00 PM", :friday_beginning_hours=>"7:30 AM", :friday_ending_hours=>"5:00 PM",
+      # :georeference=>{:type=>"Point", :coordinates=>[-76.1152, 43.12806]}, :":@computed_region_yamh_8v7k"=>"704", :":@computed_region_wbg7_3whc"=>"730", :":@computed_region_kjdx_g34t"=>"2132"}
+    end    
+  end
+
+  describe 'transformed New York Facility objects' do
+  
+    before(:each) do
+      @ny_dmv_office_locations = DmvDataService.new.ny_dmv_office_locations
+      @new_york_facilities = @facility_factory.create_ny_facilities(@ny_dmv_office_locations)
+
+      #for testing multiple elements at different index positions; this should avoid the first/last element and randomly pick one from the remaining elements
+      @random_middle_index = rand(1..@ny_dmv_office_locations.length - 2)
+      #pry(main)> @random_middle_index
+      #=> 169
+      @random_middle_index = 169
+    end
+
+    it 'creates CO facility objects correctly' do
+      expect(@new_york_facilities).to be_an(Array)
+      expect(@new_york_facilities[0]).to be_a(Facility)
+    end
+
+    it 'correctly transforms the first facility_record object' do
+      raw_location_data = @ny_dmv_office_locations[0]
+      
+      full_address = "#{raw_location_data[:street_address_line_1]} #{raw_location_data[:city]} #{raw_location_data[:state]} #{raw_location_data[:zip_code]}"
+      
+      expect(@new_york_facilities[0].address).to eq(full_address)
+      expect(@new_york_facilities[0].name).to eq("LAKE PLACID")
+      expect(@new_york_facilities[0].phone).to eq(nil)
+      
+      #pry(main)> @new_york_facilities[0]
+      #=> #<Facility:0x0000000103788a30 @address="2693 MAIN STREET LAKE PLACID NY 12946", @collected_fees=0, @name="LAKE PLACID", @phone=nil, @registered_vehicles=[], @services=[]>
+    end
+
+    it 'correctly transforms the last facility_record object' do
+      raw_location_data = @ny_dmv_office_locations[-1]
+      
+      full_address = "#{raw_location_data[:street_address_line_1]} #{raw_location_data[:city]} #{raw_location_data[:state]} #{raw_location_data[:zip_code]}"
+
+      expect(@new_york_facilities[-1].address).to eq(full_address)
+      expect(@new_york_facilities[-1].name).to eq("MIDDLETOWN")
+      expect(@new_york_facilities[-1].phone).to eq("8453461180")
+      
+      #pry(main)> @new_york_facilities[-1]
+      #=> #<Facility:0x00000001037813c0 @address="12 KING STREET MIDDLETOWN NY 10940", @collected_fees=0, @name="MIDDLETOWN", @phone="8453461180", @registered_vehicles=[], @services=[]>
+    end
+
+    it 'correctly transforms a middle facility_record object' do
+      raw_location_data = @ny_dmv_office_locations[169]
+      
+      full_address = "#{raw_location_data[:street_address_line_1]} #{raw_location_data[:city]} #{raw_location_data[:state]} #{raw_location_data[:zip_code]}"
+
+      expect(@new_york_facilities[169].address).to eq(full_address)
+      expect(@new_york_facilities[169].name).to eq("NORTH SYRACUSE KIOSK")
+      expect(@new_york_facilities[169].phone).to eq(nil)
+      
+      #pry(main)> @new_york_facilities[169]
+      #=> #<Facility:0x00000001037815a0 @address="5801 E. TAFT ROAD NORTH SYRACUSE NY 13212", @collected_fees=0, @name="NORTH SYRACUSE KIOSK", @phone=nil, @registered_vehicles=[], @services=[]>
     end
 
   end
