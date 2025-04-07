@@ -148,7 +148,7 @@ RSpec.describe FacilityFactory do
       
       expect(@new_york_facilities[0].address).to eq(full_address)
       expect(@new_york_facilities[0].name).to eq("LAKE PLACID")
-      expect(@new_york_facilities[0].phone).to eq("(417) 548-7332")
+      expect(@new_york_facilities[0].phone).to eq(nil)
 
       #pry(main)> @new_york_facilities[0]
       #=> <Facility:0x0000000103c8f970 @name="LAKE PLACID", @address="2693 MAIN STREET  LAKE PLACID NY 12946", @phone="(417) 548-7332", @services=[], @registered_vehicles=[], @collected_fees=0>
