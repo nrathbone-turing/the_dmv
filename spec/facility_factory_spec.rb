@@ -213,7 +213,7 @@ RSpec.describe FacilityFactory do
     it 'contains expected values for the last facility_record element' do
       
       expect(@ny_dmv_office_locations[-1][:office_name]).to eq("MIDDLETOWN")
-      expect(@ny_dmv_office_locations[-1][:phone]).to eq("8453461180")
+      expect(@ny_dmv_office_locations[-1][:public_phone_number]).to eq("8453461180")
       expect(@ny_dmv_office_locations[-1][:street_address_line_1]).to eq("12 KING STREET")
       expect(@ny_dmv_office_locations[-1][:city]).to eq("MIDDLETOWN")
       expect(@ny_dmv_office_locations[-1][:state]).to eq("NY")

@@ -35,11 +35,12 @@ class FacilityFactory
   def create_ny_facilities(external_dataset)
     external_dataset.map do |facility_record|
       full_address = "#{facility_record[:street_address_line_1]} #{facility_record[:city]} #{facility_record[:state]} #{facility_record[:zip_code]}" 
-      
+      phone = facility_record[:public_phone_number]
+
       Facility.new({
         :name => facility_record[:office_name],
         :address => full_address,
-        :phone => facility_record[:phone]
+        :phone => phone
       })
     end
   end
