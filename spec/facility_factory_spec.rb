@@ -41,6 +41,8 @@ RSpec.describe FacilityFactory do
 
     expect(@facilities).to be_an(Array)
     expect(@facilities[0]).to be_a(Facility)
+    
+    expect(@facilities[0].name).to eq("DMV Tremont Branch")
 
     #p @facilities[0]
     #=> #<Facility:0x0000000105e924a0 @name="DMV Tremont Branch", @address="2855 Tremont Place Suite 118 Denver CO 80205", @phone="(720) 865-4600", @services=[], @registered_vehicles=[], @collected_fees=0>
@@ -92,7 +94,7 @@ RSpec.describe FacilityFactory do
     expect(@missouri_facilities[0]).to be_a(Facility)
 
     #printing return value for the first element in the @mo_dmv_office_locations array to make sure it works
-    #p @mo_dmv_office_locations[0]
+    p @mo_dmv_office_locations[0]
     #=> {:number=>"032", :type=>"1MV", :name=>"Sarcoxie", :address1=>"111 N 6th", :city=>"Sarcoxie", :state=>"MO", :zipcode=>"64862", :phone=>"(417) 548-7332", :fax=>"(417) 548-3108",
     # :size=>"2", :email=>"sarcoxie.licenseoffice@lo.mo.gov", :agent=>"City of Sarcoxie", :officemanager=>"Heather Swan", :contractmanager=>"Don Triplett",
     # :daysopen=>"Monday & Friday 8:30-5:00, Tuesday - Thursday 8:30-4:30", :daysclosed=>"Monday & Friday 1:00-1:30",
@@ -101,16 +103,16 @@ RSpec.describe FacilityFactory do
     # :":@computed_region_ny2h_ckbz"=>"410", :":@computed_region_c8ar_jsdj"=>"94", :":@computed_region_ikxf_gfzr"=>"1966"}
    
     #printing the return value for all of the keys within the hash of the first facility record element in the @mo_dmv_office_locations array to make sure the mapping logic is using the correct keys
-    #p @mo_dmv_office_locations[0].keys
+    p @mo_dmv_office_locations[0].keys
     #=> [:number, :type, :name, :address1, :city, :state, :zipcode, :phone, :fax, :size, :email, :agent, :officemanager, :contractmanager,
     # :daysopen, :daysclosed, :holidaysclosed, :additionaldaysclosed, :latlng, :":@computed_region_ny2h_ckbz", :":@computed_region_c8ar_jsdj", :":@computed_region_ikxf_gfzr"]
 
     #printing the return value for all of the keys used by any hash within the array of facility hashes to make sure I am accounting for multiple address lines or other differences that may exist between first element and others
-    #p @mo_dmv_office_locations.flat_map { |facility_record| facility_record.keys }.uniq
+    p @mo_dmv_office_locations.flat_map { |facility_record| facility_record.keys }.uniq
     #=> [:number, :type, :name, :address1, :city, :state, :zipcode, :phone, :fax, :size, :email, :agent, :officemanager, :contractmanager, :daysopen, :daysclosed, :holidaysclosed, :additionaldaysclosed,
     # :latlng, :":@computed_region_ny2h_ckbz", :":@computed_region_c8ar_jsdj", :":@computed_region_ikxf_gfzr", :facebook_url, :managercontactnumber, :othercontactinfo, :dorregionnumber, :remarks, :additional_license_office_info]
 
-    #p @missouri_facilities[0]
+    p @missouri_facilities[0]
     #=> #<Facility:0x00000001042a8bb8 @name="Sarcoxie", @address="111 N 6th  Sarcoxie MO 64862", @phone="(417) 548-7332", @services=[], @registered_vehicles=[], @collected_fees=0>
   end
 
