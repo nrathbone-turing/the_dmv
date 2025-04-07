@@ -99,33 +99,44 @@ RSpec.describe FacilityFactory do
     end
   end
 
-  it 'correctly creates New York facility objects from external New York data source' do
-    @ny_dmv_office_locations = DmvDataService.new.ny_dmv_office_locations
-    @new_york_facilities = @facility_factory.create_ny_facilities(@ny_dmv_office_locations)
+  describe 'New York facility data' do
+    
+    before(:each) do
+      @ny_dmv_office_locations = DmvDataService.new.ny_dmv_office_locations
+      @new_york_facilities = @facility_factory.create_ny_facilities(@ny_dmv_office_locations)
+    end
 
-    expect(@new_york_facilities).to be_an(Array)
-    expect(@new_york_facilities[0]).to be_a(Facility)
+    it 'creates NY facility objects correctly' do
+      expect(@new_york_facilities).to be_an(Array)
+      expect(@new_york_facilities[0]).to be_a(Facility)
 
-    #printing return value for the first element in the @ny_dmv_office_locations array to make sure it works
-    #p @ny_dmv_office_locations[0]
-    #=> {:office_name=>"LAKE PLACID", :office_type=>"COUNTY OFFICE", :street_address_line_1=>"2693 MAIN STREET", :city=>"LAKE PLACID", :state=>"NY", :zip_code=>"12946",
-    # :monday_beginning_hours=>"CLOSED", :monday_ending_hours=>"CLOSED", :georeference=>{:type=>"Point", :coordinates=>[-73.98278, 44.28213]}, :":@computed_region_yamh_8v7k"=>"430", 
-    # :":@computed_region_wbg7_3whc"=>"275", :":@computed_region_kjdx_g34t"=>"2084"}
-   
-    #printing the return value for all of the keys within the hash of the first facility record element in the @ny_dmv_office_locations array to make sure the mapping logic is using the correct keys
-    #p @ny_dmv_office_locations[0].keys
-    #=> [:office_name, :office_type, :street_address_line_1, :city, :state, :zip_code, :monday_beginning_hours, :monday_ending_hours,
-    # :georeference, :":@computed_region_yamh_8v7k", :":@computed_region_wbg7_3whc", :":@computed_region_kjdx_g34t"]
+      #printing return value for the first element in the @ny_dmv_office_locations array to make sure it works
+      #p @ny_dmv_office_locations[0]
+      #=> {:office_name=>"LAKE PLACID", :office_type=>"COUNTY OFFICE", :street_address_line_1=>"2693 MAIN STREET", :city=>"LAKE PLACID", :state=>"NY", :zip_code=>"12946",
+      # :monday_beginning_hours=>"CLOSED", :monday_ending_hours=>"CLOSED", :georeference=>{:type=>"Point", :coordinates=>[-73.98278, 44.28213]}, :":@computed_region_yamh_8v7k"=>"430", 
+      # :":@computed_region_wbg7_3whc"=>"275", :":@computed_region_kjdx_g34t"=>"2084"}
+    
+      #printing the return value for all of the keys within the hash of the first facility record element in the @ny_dmv_office_locations array to make sure the mapping logic is using the correct keys
+      #p @ny_dmv_office_locations[0].keys
+      #=> [:office_name, :office_type, :street_address_line_1, :city, :state, :zip_code, :monday_beginning_hours, :monday_ending_hours,
+      # :georeference, :":@computed_region_yamh_8v7k", :":@computed_region_wbg7_3whc", :":@computed_region_kjdx_g34t"]
 
-    #printing the return value for all of the keys used by any hash within the array of facility hashes to make sure I am accounting for multiple address lines or other differences that may exist between first element and others
-    #p @ny_dmv_office_locations.flat_map { |facility_record| facility_record.keys }.uniq
-    # => [:office_name, :office_type, :street_address_line_1, :city, :state, :zip_code, :monday_beginning_hours, :monday_ending_hours,
-    # :georeference, :":@computed_region_yamh_8v7k", :":@computed_region_wbg7_3whc", :":@computed_region_kjdx_g34t", :public_phone_number,
-    # :tuesday_beginning_hours, :tuesday_ending_hours, :wednesday_beginning_hours, :wednesday_ending_hours, :thursday_beginning_hours, :thursday_ending_hours,
-    # :friday_beginning_hours, :friday_ending_hours, :street_address_line_2, :public_phone_extension, :saturday_beginning_hours, :saturday_ending_hours]
+      #printing the return value for all of the keys used by any hash within the array of facility hashes to make sure I am accounting for multiple address lines or other differences that may exist between first element and others
+      #p @ny_dmv_office_locations.flat_map { |facility_record| facility_record.keys }.uniq
+      # => [:office_name, :office_type, :street_address_line_1, :city, :state, :zip_code, :monday_beginning_hours, :monday_ending_hours,
+      # :georeference, :":@computed_region_yamh_8v7k", :":@computed_region_wbg7_3whc", :":@computed_region_kjdx_g34t", :public_phone_number,
+      # :tuesday_beginning_hours, :tuesday_ending_hours, :wednesday_beginning_hours, :wednesday_ending_hours, :thursday_beginning_hours, :thursday_ending_hours,
+      # :friday_beginning_hours, :friday_ending_hours, :street_address_line_2, :public_phone_extension, :saturday_beginning_hours, :saturday_ending_hours]
+    end
 
-    #p @new_york_facilities[0]
-    #=> <Facility:0x0000000103c8f970 @name="LAKE PLACID", @address="2693 MAIN STREET  LAKE PLACID NY 12946", @phone=nil, @services=[], @registered_vehicles=[], @collected_fees=0>
+    it 'transforms address data correctly' do
+      raw_location_data = @ny_dmv_office_locations[0]
+      full_address = "#{raw_location_data[:street_address_line_1]} #{raw_location_data[:city]} #{raw_location_data[:state]} #{raw_location_data[:zip_code]}"
+      expect(@new_york_facilities[0].address).to eq(full_address)
+      
+      #p @new_york_facilities[0]
+      #=> <Facility:0x0000000103c8f970 @name="LAKE PLACID", @address="2693 MAIN STREET  LAKE PLACID NY 12946", @phone=nil, @services=[], @registered_vehicles=[], @collected_fees=0>
+    end
   end
 
   it 'correctly creates Missouri facility objects from external Missouri data source' do
