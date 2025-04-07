@@ -2,85 +2,101 @@ require 'spec_helper'
 
 RSpec.describe FacilityFactory do
   
-  before(:each) do
-    @facility_factory = FacilityFactory.new
-  end
-
-  it 'exists' do
-    expect(@facility_factory).to be_an_instance_of(FacilityFactory)
-    
-    #@co_dmv_office_locations is an array of hashes, where each hash represents an individual facility record
-    #from the Colorado DMV Office Locations external data source
-    @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
-
-    expect(@co_dmv_office_locations).to be_an(Array)
-    expect(@co_dmv_office_locations[0][:dmv_office]).to eq("DMV Tremont Branch")
-    expect(@co_dmv_office_locations[0][:phone]).to eq("(720) 865-4600")
-    expect(@co_dmv_office_locations[0][:address_li]).to eq("2855 Tremont Place")
-    expect(@co_dmv_office_locations[0][:address__1]).to eq("Suite 118")
-    expect(@co_dmv_office_locations[0][:city]).to eq("Denver")
-    expect(@co_dmv_office_locations[0][:state]).to eq("CO")
-    expect(@co_dmv_office_locations[0][:zip]).to eq("80205")
-
-    #testing return value for the first element in the @co_dmv_office_locations array to make sure it works
-    #pry(main)> @co_dmv_office_locations[0]
-    #=> {:the_geom=>{:type=>"Point", :coordinates=>[-104.97443112500002, 39.75525297420336]}, :dmv_id=>"1", :dmv_office=>"DMV Tremont Branch",
-    # :address_li=>"2855 Tremont Place", :address__1=>"Suite 118", :city=>"Denver", :state=>"CO", :zip=>"80205", :phone=>"(720) 865-4600",
-    # :hours=>"Mon, Tue, Thur, Fri  8:00 a.m.- 4:30 p.m. / Wed 8:30 a.m.-4:30 p.m.", :services_p=>"vehicle titles, registration, renewals; VIN inspections",
-    # :parking_no=>"parking available in the lot at the back of the bldg (Glenarm Street)", :photo=>"images/Tremont.jpg", :address_id=>"175164", :":@computed_region_nku6_53ud"=>"1444"}
-    
-    #testing the return value for all of the keys within the hash of the first facility record element in the @co_dmv_office_locations array to make sure the mapping logic is using the correct keys
-    #pry(main)> @co_dmv_office_locations[0].keys
-    #=> [:the_geom, :dmv_id, :dmv_office, :address_li, :address__1, :city, :state, :zip, :phone, :hours, :services_p, :parking_no, :photo, :address_id, :":@computed_region_nku6_53ud"]
-
-    #testing the return value for all of the keys used by any hash within the array of facility hashes to make sure I am accounting for multiple address lines or other differences that may exist between first element and others
-    #pry(main)> @co_dmv_office_locations.flat_map { |facility_record| facility_record.keys }.uniq
-    #=> [:the_geom, :dmv_id, :dmv_office, :address_li, :address__1, :city, :state, :zip, :phone, :hours, :services_p, :parking_no, :photo, :address_id, :":@computed_region_nku6_53ud", :location]
-  end
+  describe '#create_facilities' do
   
-  it 'has the expected raw address data in the external dataset needed for transformation' do
-    @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
-    @facilities = @facility_factory.create_facilities(@co_dmv_office_locations)
+    before(:each) do
+      
+      @facility_factory = FacilityFactory.new
+      @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
+      
+      binding.pry
+      #for testing multiple elements at different index positions; this should avoid the first/last element and randomly pick one from the remaining elements
+      @random_middle_index = rand(1..@co_dmv_office_locations.length - 2)
+      #pry(main)> @random_middle_index
+      #=> 2
+      @random_middle_index = 2
+    end
 
-    #testing the first element (facility hash)
-    raw_location_data = @co_dmv_office_locations[0]
+    it 'exists' do
+      expect(@facility_factory).to be_an_instance_of(FacilityFactory)
+    end
 
-    expect(raw_location_data[:address_li]).to eq("2855 Tremont Place")
-    expect(raw_location_data[:address__1]).to eq("Suite 118")
-    expect(raw_location_data[:city]).to eq("Denver")
-    expect(raw_location_data[:state]).to eq("CO")
-    expect(raw_location_data[:zip]).to eq("80205")
+    describe 'raw Colorado DMV Office Locations data' do
+      
+      it 'is an array of facility hashes' do
+        expect(@co_dmv_office_locations).to be_an(Array)
+        
+        #@co_dmv_office_locations is an array of hashes, where each hash represents an individual facility record
+        #from the Colorado DMV Office Locations external data source
+        
+        #testing the return value for all of the keys used by any hash within the array of facility hashes to make sure I am accounting for multiple address lines or other differences that may exist between first element and others
+        #pry(main)> @co_dmv_office_locations.flat_map { |facility_record| facility_record.keys }.uniq
+        #=> [:the_geom, :dmv_id, :dmv_office, :address_li, :address__1, :city, :state, :zip, :phone, :hours, :services_p, :parking_no, :photo, :address_id, :":@computed_region_nku6_53ud", :location]
+      end
+      
+      it 'contains expected values for the first facility_record element' do
+        
+        expect(@co_dmv_office_locations[0][:dmv_office]).to eq("DMV Tremont Branch")
+        expect(@co_dmv_office_locations[0][:phone]).to eq("(720) 865-4600")
+        expect(@co_dmv_office_locations[0][:address_li]).to eq("2855 Tremont Place")
+        expect(@co_dmv_office_locations[0][:address__1]).to eq("Suite 118")
+        expect(@co_dmv_office_locations[0][:city]).to eq("Denver")
+        expect(@co_dmv_office_locations[0][:state]).to eq("CO")
+        expect(@co_dmv_office_locations[0][:zip]).to eq("80205")
+        
+        #pry(main)> @co_dmv_office_locations[0]
+        #=> {:the_geom=>{:type=>"Point", :coordinates=>[-104.97443112500002, 39.75525297420336]}, :dmv_id=>"1", :dmv_office=>"DMV Tremont Branch",
+        # :address_li=>"2855 Tremont Place", :address__1=>"Suite 118", :city=>"Denver", :state=>"CO", :zip=>"80205", :phone=>"(720) 865-4600",
+        # :hours=>"Mon, Tue, Thur, Fri  8:00 a.m.- 4:30 p.m. / Wed 8:30 a.m.-4:30 p.m.", :services_p=>"vehicle titles, registration, renewals; VIN inspections",
+        # :parking_no=>"parking available in the lot at the back of the bldg (Glenarm Street)", :photo=>"images/Tremont.jpg", :address_id=>"175164", :":@computed_region_nku6_53ud"=>"1444"}
+      end
 
-    #testing the last element (facility hash)
+      it 'contains expected values for the last facility_record element' do
+        
+        expect(@co_dmv_office_locations[-1][:dmv_office]).to eq("DMV Southeast Branch")
+        expect(@co_dmv_office_locations[-1][:phone]).to eq("(720) 865-4600")
+        expect(@co_dmv_office_locations[-1][:address_li]).to eq("2243 S Monaco Street Pkwy")
+        expect(@co_dmv_office_locations[-1][:address__1]).to eq(nil)
+        expect(@co_dmv_office_locations[-1][:city]).to eq("Denver")
+        expect(@co_dmv_office_locations[-1][:state]).to eq("CO")
+        expect(@co_dmv_office_locations[-1][:zip]).to eq("80222")
+        
+        #pry(main)> @co_dmv_office_locations[-1]
+        #=> {:the_geom=>{:type=>"Point", :coordinates=>[-104.91476182907581, 39.67726719069066]}, :dmv_id=>"5", :dmv_office=>"DMV Southeast Branch",
+        # :address_li=>"2243 S Monaco Street Pkwy", :location=>"Villa Monaco", :city=>"Denver", :state=>"CO", :zip=>"80222", :phone=>"(720) 865-4600",
+        # :hours=>"Mon, Tue, Thur, Fri  8:00 a.m.- 4:30 p.m. / Wed 8:30 a.m.-4:30 p.m.", :services_p=>"vehicle titles, registration, renewals;  VIN inspections",
+        # :parking_no=>"parking in front of the building", :photo=>"images/Monaco.jpg", :address_id=>"460381", :":@computed_region_nku6_53ud"=>"1444"}
+      end
 
+      it 'contains expected values for the first facility_record element' do
+        
+        expect(@co_dmv_office_locations[2][:dmv_office]).to eq("DMV Tremont Branch")
+        expect(@co_dmv_office_locations[2][:phone]).to eq("(720) 865-4600")
+        expect(@co_dmv_office_locations[2][:address_li]).to eq("2855 Tremont Place")
+        expect(@co_dmv_office_locations[2][:address__1]).to eq("Suite 118")
+        expect(@co_dmv_office_locations[2][:city]).to eq("Denver")
+        expect(@co_dmv_office_locations[2][:state]).to eq("CO")
+        expect(@co_dmv_office_locations[2][:zip]).to eq("80205")
+        
+        #pry(main)> @co_dmv_office_locations[2]
+        #=> {:the_geom=>{:type=>"Point", :coordinates=>[-105.03590369947995, 39.77608961495372]}, :dmv_id=>"3", :dmv_office=>"DMV Northwest Branch",
+        # :address_li=>"3698 W. 44th Avenue", :location=>"Safeway Plaza", :city=>"Denver", :state=>"CO", :zip=>"80211", :phone=>"(720) 865-4600",
+        # :hours=>"Mon, Tue, Thur, Fri  8:00 a.m.- 4:30 p.m. / Wed 8:30 a.m.-4:30 p.m.", :services_p=>"vehicle titles, registration, renewals;  VIN inspections",
+        # :parking_no=>"parking in the lot in front of the building", :photo=>"images/44thAve.jpg", :address_id=>"29409", :":@computed_region_nku6_53ud"=>"1444"}
+      end
+    end
+      
+    describe '#full_address helper method' do
 
-    #testing a random middle index element (facility hash)
-    
-  end
-
-  it 'builds a full address string from the raw using the full_address helper method' do
-    @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
-    @facilities = @facility_factory.create_facilities(@co_dmv_office_locations)
-
-    raw_location_data = @co_dmv_office_locations[0]
-    
-    expect(@facility_factory.full_address(raw_location_data)).to eq("#{@co_dmv_office_locations[0][:address_li]} #{@co_dmv_office_locations[0][:address__1]} #{@co_dmv_office_locations[0][:city]} #{@co_dmv_office_locations[0][:state]} #{@co_dmv_office_locations[0][:zip]}")
-    expect(@facility_factory.full_address(raw_location_data)).to eq("2855 Tremont Place Suite 118 Denver CO 80205")
-  end
-
-  it 'correctly creates facility objects with transformed address from external sources raw data' do
-    @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
-    @facilities = @facility_factory.create_facilities(@co_dmv_office_locations)
-
-    expect(@facilities).to be_an(Array)
-    expect(@facilities[0]).to be_a(Facility)
-    
-    expect(@facilities[0].name).to eq(@co_dmv_office_locations[0][:dmv_office])
-    expect(@facilities[0].phone).to eq(@co_dmv_office_locations[0][:phone])
-    expect(@facilities[0].address).to eq("2855 Tremont Place Suite 118 Denver CO 80205")
-    
-    #pry(main)> @facilities[0]
-    #=> #<Facility:0x0000000105e924a0 @name="DMV Tremont Branch", @address="2855 Tremont Place Suite 118 Denver CO 80205", @phone="(720) 865-4600", @services=[], @registered_vehicles=[], @collected_fees=0>
+      it 'builds a full address string from the raw using the full_address helper method' do
+        @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
+        
+        raw_location_data = @co_dmv_office_locations[0]
+        
+        expect(@facility_factory.full_address(raw_location_data)).to eq("#{@co_dmv_office_locations[0][:address_li]} #{@co_dmv_office_locations[0][:address__1]} #{@co_dmv_office_locations[0][:city]} #{@co_dmv_office_locations[0][:state]} #{@co_dmv_office_locations[0][:zip]}")
+        expect(@facility_factory.full_address(raw_location_data)).to eq("2855 Tremont Place Suite 118 Denver CO 80205")
+      end    
+    end
   end
 
   describe 'Colorado facility data' do
