@@ -4,13 +4,6 @@ RSpec.describe FacilityFactory do
   
   before(:each) do
     @facility_factory = FacilityFactory.new
-    @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
-    @ny_dmv_office_locations = DmvDataService.new.ny_dmv_office_locations
-    @mo_dmv_office_locations = DmvDataService.new.mo_dmv_office_locations
-
-    @colorado_facilities = @facility_factory.create_co_facilities(@co_dmv_office_locations)
-    @new_york_facilities = @facility_factory.create_ny_facilities(@ny_dmv_office_locations)
-    @missouri_facilities = @facility_factory.create_mo_facilities(@mo_dmv_office_locations)
   end
 
   it 'exists' do
@@ -18,6 +11,8 @@ RSpec.describe FacilityFactory do
     
     #@co_dmv_office_locations is an array of hashes, where each hash represents an individual facility record
     #from the Colorado DMV Office Locations external data source
+    @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
+
     expect(@co_dmv_office_locations).to be_an(Array)
 
     #printing return value for the first element in the @co_dmv_office_locations array to make sure it works
@@ -37,6 +32,7 @@ RSpec.describe FacilityFactory do
   end
   
   it 'correctly creates facility objects from external data source' do
+    @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
     @facilities = @facility_factory.create_facilities(@co_dmv_office_locations)
 
     expect(@facilities).to be_an(Array)
@@ -49,6 +45,7 @@ RSpec.describe FacilityFactory do
   end
 
   it 'correctly creates Colorado facility objects from external Colorado data source' do
+    @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
     @colorado_facilities = @facility_factory.create_co_facilities(@co_dmv_office_locations)
 
     expect(@colorado_facilities).to be_an(Array)
@@ -59,7 +56,7 @@ RSpec.describe FacilityFactory do
   end
 
   it 'correctly creates New York facility objects from external New York data source' do
-    
+    @ny_dmv_office_locations = DmvDataService.new.ny_dmv_office_locations
     @new_york_facilities = @facility_factory.create_ny_facilities(@ny_dmv_office_locations)
 
     expect(@new_york_facilities).to be_an(Array)
@@ -88,6 +85,7 @@ RSpec.describe FacilityFactory do
   end
 
   it 'correctly creates Missouri facility objects from external Missouri data source' do
+    @mo_dmv_office_locations = DmvDataService.new.mo_dmv_office_locations
     @missouri_facilities = @facility_factory.create_mo_facilities(@mo_dmv_office_locations)
 
     expect(@missouri_facilities).to be_an(Array)
