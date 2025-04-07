@@ -1,5 +1,5 @@
 require 'spec_helper'
-#binding.pry
+
 RSpec.describe VehicleFactory do
 
   before(:each) do
@@ -13,6 +13,11 @@ RSpec.describe VehicleFactory do
     # @wa_ev_registrations is an array of hashes, where each hash represents an individual vehicle record
     #from the Washington State EV Vehicle Registration external data source
     expect(@wa_ev_registrations).to be_an(Array)
+    
+    expect(@wa_ev_registrations[0][:vin_1_10]).to eq("5YJYGDED6M")
+    expect(@wa_ev_registrations[0][:model_year]).to eq("2021")
+    expect(@wa_ev_registrations[0][:make]).to eq("TESLA")
+    expect(@wa_ev_registrations[0][:model]).to eq("Model Y")
 
     #printing return value for the first element in the @wa_ev_registrations array to make sure it works
     #p @wa_ev_registrations[0]
@@ -25,15 +30,6 @@ RSpec.describe VehicleFactory do
     # :_2019_hb_2042_sale_price_value_requirement=>"Sale price/value requirement is met", :electric_vehicle_fee_paid=>"Not Applicable", :transportation_electrification_fee_paid=>"Not Applicable", 
     # :hybrid_vehicle_electrification_fee_paid=>"Not Applicable", :census_tract_2020=>"53033032330", :legislative_district=>"45", :electric_utility=>"PUGET SOUND ENERGY INC||CITY OF TACOMA - (WA)"}
     
-    #printing the return value for all of the keys within the hash of the first vehicle record element in the @wa_ev_registrations array to make sure the mapping is using the correct keys
-    #p @wa_ev_registrations[0].keys
-    #=> [:electric_vehicle_type, :vin_1_10, :dol_vehicle_id, :model_year, :make, :model, :vehicle_primary_use, :electric_range, :odometer_reading, :odometer_code,
-    # :new_or_used_vehicle, :sale_price, :date_of_vehicle_sale, :base_msrp, :transaction_type, :transaction_date, :transaction_year, 
-    # :county, :city, :state_of_residence, :zip, :hb_2042_clean_alternative_fuel_vehicle_cafv_eligibility, :meets_2019_hb_2042_electric_range_requirement, 
-    # :meets_2019_hb_2042_sale_date_requirement, :meets_2019_hb_2042_sale_price_value_requirement, :_2019_hb_2042_battery_range_requirement, 
-    # :_2019_hb_2042_purchase_date_requirement, :_2019_hb_2042_sale_price_value_requirement, :electric_vehicle_fee_paid, :transportation_electrification_fee_paid, 
-    # :hybrid_vehicle_electrification_fee_paid, :census_tract_2020, :legislative_district, :electric_utility]
-    
   end
 
   it 'creates vehicle objects from external data source' do
@@ -44,6 +40,29 @@ RSpec.describe VehicleFactory do
 
     #p vehicles[0]
     #=> #<Vehicle:0x0000000104531a60 @vin="5YJYGDED6M", @year="2021", @make="TESLA", @model="Model Y", @engine=:ev, @registration_date=nil, @plate_type=nil>
+
+    expect(vehicles[0].vin).to eq(@wa_ev_registrations[0][:vin_1_10])
+    expect(vehicles[0].make).to eq(@wa_ev_registrations[0][:make])
+    expect(vehicles[0].model).to eq(@wa_ev_registrations[0][:model])
+    expect(vehicles[0].year).to eq(@wa_ev_registrations[0][:model_year])
+    expect(vehicles[0].engine).to eq(:ev)
+
+    #printing the return value for all of the keys within the hash of the first vehicle record element in the @wa_ev_registrations array to make sure the mapping is using the correct keys
+    #p @wa_ev_registrations[0].keys
+    #=> [:electric_vehicle_type, :vin_1_10, :dol_vehicle_id, :model_year, :make, :model, :vehicle_primary_use, :electric_range, :odometer_reading, :odometer_code,
+    # :new_or_used_vehicle, :sale_price, :date_of_vehicle_sale, :base_msrp, :transaction_type, :transaction_date, :transaction_year, 
+    # :county, :city, :state_of_residence, :zip, :hb_2042_clean_alternative_fuel_vehicle_cafv_eligibility, :meets_2019_hb_2042_electric_range_requirement, 
+    # :meets_2019_hb_2042_sale_date_requirement, :meets_2019_hb_2042_sale_price_value_requirement, :_2019_hb_2042_battery_range_requirement, 
+    # :_2019_hb_2042_purchase_date_requirement, :_2019_hb_2042_sale_price_value_requirement, :electric_vehicle_fee_paid, :transportation_electrification_fee_paid, 
+    # :hybrid_vehicle_electrification_fee_paid, :census_tract_2020, :legislative_district, :electric_utility]
+    
+    #printing the return value for all of the keys used by any hash within the array of vehicle hashes to make sure I am accounting for other differences that may exist between first element and others
+    #p @wa_ev_registrations.flat_map { |vehicle_record| vehicle_record.keys }.uniq
+    #=> [:electric_vehicle_type, :vin_1_10, :dol_vehicle_id, :model_year, :make, :model, :vehicle_primary_use, :electric_range, :odometer_reading, :odometer_code, :new_or_used_vehicle,
+    # :sale_price, :date_of_vehicle_sale, :base_msrp, :transaction_type, :transaction_date, :transaction_year, :county, :city, :state_of_residence, :zip,
+    # :hb_2042_clean_alternative_fuel_vehicle_cafv_eligibility, :meets_2019_hb_2042_electric_range_requirement, :meets_2019_hb_2042_sale_date_requirement,
+    # :meets_2019_hb_2042_sale_price_value_requirement, :_2019_hb_2042_battery_range_requirement, :_2019_hb_2042_purchase_date_requirement, :_2019_hb_2042_sale_price_value_requirement,
+    # :electric_vehicle_fee_paid, :transportation_electrification_fee_paid, :hybrid_vehicle_electrification_fee_paid, :census_tract_2020, :legislative_district, :electric_utility]
 
     #since the external database is made up of only electric vehicles, we're hard-coding the :engine value as :ev for each vehicle created in the vehicle factory
     #when we pass that value (:engine => :ev) into the hash used for each new Vehicle object, it becomes part of the vehicle_details hash argument that gets passed into the Vehicle class's initialize method
