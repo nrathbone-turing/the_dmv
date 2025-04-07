@@ -10,6 +10,7 @@ RSpec.describe VehicleFactory do
     #@random_middle_index = rand(1..@wa_ev_registrations.length - 2)
     #pry(main)> @random_middle_index
     #=> 480
+    @random_middle_index = 480
   end
 
   it 'exists' do
@@ -61,7 +62,10 @@ RSpec.describe VehicleFactory do
     # :hybrid_vehicle_electrification_fee_paid=>"No", :census_tract_2020=>"53067010200", :legislative_district=>"22", :electric_utility=>"PUGET SOUND ENERGY INC"}
 
     #testing a random middle index element (vehicle hash)
-    @random_middle_index = 480
+    expect(@wa_ev_registrations[@random_middle_index][:vin_1_10]).to eq("1FT6W1EV7P")
+    expect(@wa_ev_registrations[@random_middle_index][:model_year]).to eq("2023")
+    expect(@wa_ev_registrations[@random_middle_index][:make]).to eq("FORD")
+    expect(@wa_ev_registrations[@random_middle_index][:model]).to eq("F-150")
     
     #pry(main)> @wa_ev_registrations[@random_middle_index]
     #=> {:electric_vehicle_type=>"Battery Electric Vehicle (BEV)", :vin_1_10=>"1FT6W1EV7P", :dol_vehicle_id=>"230684212", :model_year=>"2023", :make=>"FORD", :model=>"F-150", 
@@ -72,12 +76,6 @@ RSpec.describe VehicleFactory do
     # :_2019_hb_2042_battery_range_requirement=>"Battery range requirement is met", :_2019_hb_2042_purchase_date_requirement=>"This transaction type is not eligible for the tax exemption", 
     # :_2019_hb_2042_sale_price_value_requirement=>"This transaction type is not eligible for the tax exemption", :electric_vehicle_fee_paid=>"Yes", :transportation_electrification_fee_paid=>"Yes", 
     # :hybrid_vehicle_electrification_fee_paid=>"No", :census_tract_2020=>"53011040605", :legislative_district=>"18", :electric_utility=>"BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF CLARK COUNTY - (WA)"}
-    
-    expect(@wa_ev_registrations[@random_middle_index][:vin_1_10]).to eq("1FT6W1EV7P")
-    expect(@wa_ev_registrations[@random_middle_index][:model_year]).to eq("2023")
-    expect(@wa_ev_registrations[@random_middle_index][:make]).to eq("FORD")
-    expect(@wa_ev_registrations[@random_middle_index][:model]).to eq("F-150")
-
   end
 
   it 'creates vehicle objects from external data source' do
@@ -86,11 +84,8 @@ RSpec.describe VehicleFactory do
     expect(vehicles).to be_an(Array)
     expect(vehicles[0]).to be_a(Vehicle)
 
-    #p vehicles[0]
-    #=> #<Vehicle:0x0000000104531a60 @vin="5YJYGDED6M", @year="2021", @make="TESLA", @model="Model Y", @engine=:ev, @registration_date=nil, @plate_type=nil>
-
-    #printing the return value for all of the keys used by any hash within the array of vehicle hashes to make sure I am accounting for other differences that may exist between first element and others
-    #p @wa_ev_registrations.flat_map { |vehicle_record| vehicle_record.keys }.uniq
+    #testing the return value for all of the keys used by any hash within the array of vehicle hashes to make sure I am accounting for other differences that may exist between first element and others
+    #pry(main)> vehicles.flat_map { |vehicle_record| vehicle_record.keys }.uniq
     #=> [:electric_vehicle_type, :vin_1_10, :dol_vehicle_id, :model_year, :make, :model, :vehicle_primary_use, :electric_range, :odometer_reading, :odometer_code, :new_or_used_vehicle,
     # :sale_price, :date_of_vehicle_sale, :base_msrp, :transaction_type, :transaction_date, :transaction_year, :county, :city, :state_of_residence, :zip,
     # :hb_2042_clean_alternative_fuel_vehicle_cafv_eligibility, :meets_2019_hb_2042_electric_range_requirement, :meets_2019_hb_2042_sale_date_requirement,
@@ -102,22 +97,41 @@ RSpec.describe VehicleFactory do
     expect(vehicles[0].model).to eq(@wa_ev_registrations[0][:model])
     expect(vehicles[0].year).to eq(@wa_ev_registrations[0][:model_year])
     expect(vehicles[0].engine).to eq(:ev)
-
-    #printing the return value for all of the keys within the hash of the first vehicle record element in the @wa_ev_registrations array to make sure the mapping is using the correct keys
-    #p @wa_ev_registrations[0].keys
-    #=> [:electric_vehicle_type, :vin_1_10, :dol_vehicle_id, :model_year, :make, :model, :vehicle_primary_use, :electric_range, :odometer_reading, :odometer_code,
-    # :new_or_used_vehicle, :sale_price, :date_of_vehicle_sale, :base_msrp, :transaction_type, :transaction_date, :transaction_year, 
-    # :county, :city, :state_of_residence, :zip, :hb_2042_clean_alternative_fuel_vehicle_cafv_eligibility, :meets_2019_hb_2042_electric_range_requirement, 
-    # :meets_2019_hb_2042_sale_date_requirement, :meets_2019_hb_2042_sale_price_value_requirement, :_2019_hb_2042_battery_range_requirement, 
-    # :_2019_hb_2042_purchase_date_requirement, :_2019_hb_2042_sale_price_value_requirement, :electric_vehicle_fee_paid, :transportation_electrification_fee_paid, 
-    # :hybrid_vehicle_electrification_fee_paid, :census_tract_2020, :legislative_district, :electric_utility]
     
     #since the external database is made up of only electric vehicles, we're hard-coding the :engine value as :ev for each vehicle created in the vehicle factory
     #when we pass that value (:engine => :ev) into the hash used for each new Vehicle object, it becomes part of the vehicle_details hash argument that gets passed into the Vehicle class's initialize method
     #and because we assign that value to an instance variable within that initialize method (@engine = vehicle_details[:engine]), and because the create_vehicles method in the VehicleFactory class returns an array of Vehicle objects,
     #we can call the .engine method on any Vehicle object in that array, accessing the @engine instance variable and returning a value of :ev
+
+    #testing the first element (vehicle object)
+    expect(vehicles[0].vin).to eq("5YJYGDED6M")
+    expect(vehicles[0].make).to eq("TESLA")
+    expect(vehicles[0].model).to eq("Model Y")
+    expect(vehicles[0].year).to eq("2021")
     expect(vehicles[0].engine).to eq(:ev)
     
+    #pry(main)> vehicles[0]
+    #=> #<Vehicle:0x0000000119551b98 @engine=:ev, @make="TESLA", @model="Model Y", @plate_type=nil, @registration_date=nil, @vin="5YJYGDED6M", @year="2021">
+
+    #testing the last element (vehicle object)
+    expect(vehicles[-1].vin).to eq("KMUKCDTC1P")
+    expect(vehicles[-1].make).to eq("GENESIS")
+    expect(vehicles[-1].model).to eq("GV60")
+    expect(vehicles[-1].year).to eq("2023")
+    expect(vehicles[-1].engine).to eq(:ev)
+
+    #pry(main)> vehicles[-1]
+    #=> #<Vehicle:0x00000001195dec50 @engine=:ev, @make="GENESIS", @model="GV60", @plate_type=nil, @registration_date=nil, @vin="KMUKCDTC1P", @year="2023">
+
+    #testing a random middle index element (vehicle object)
+    expect(vehicles[@random_middle_index].vin).to eq("1FT6W1EV7P")
+    expect(vehicles[@random_middle_index].make).to eq("FORD")
+    expect(vehicles[@random_middle_index].model).to eq("F-150")
+    expect(vehicles[@random_middle_index].year).to eq("2023")
+    expect(vehicles[@random_middle_index].engine).to eq(:ev)
+     
+    #pry(main)> vehicles[@random_middle_index]
+    #=> #<Vehicle:0x00000001195b8e88 @engine=:ev, @make="FORD", @model="F-150", @plate_type=nil, @registration_date=nil, @vin="1FT6W1EV7P", @year="2023">
   end
 
 
