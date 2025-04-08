@@ -6,35 +6,44 @@ RSpec.describe FacilityFactory do
     @facility_factory = FacilityFactory.new
   end
 
-  describe '#create_facilities' do
-  
-    before(:each) do
-      @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
-      
-      #for testing multiple elements at different index positions; this should avoid the first/last element and randomly pick one from the remaining elements
-      #@random_middle_index = rand(1..ny.length - 2)
-      #pry(main)> @random_middle_index
-      #=> 2
-      @random_middle_index = 2
-    end
-
-    it 'exists' do
+  it 'exists' do
       expect(@facility_factory).to be_an_instance_of(FacilityFactory)
+  end
+  
+  #testing specific to the new dynamic method I made to support multiple state datasets via the new location parameter
+  describe '#create_facilities (dynamic multi-state support)' do
+    before(:each) do
+      @co_data = DmvDataService.new.co_dmv_office_locations
+      @ny_data = DmvDataService.new.ny_dmv_office_locations
+      @mo_data = DmvDataService.new.mo_dmv_office_locations
+    end
+
+    it 'creates Facility objects for Colorado using the dynamic method' do
+      co_facilities = @facility_factory.create_facilities("Colorado", @co_data)
+
+      expect(co_facilities).to be_an(Array)
+      expect(co_facilities.first).to be_a(Facility)
+      expect(co_facilities.first.name).to eq("DMV Tremont Branch")
+    end
+
+    it 'creates Facility objects for New York using the dynamic method' do
+      ny_facilities = @facility_factory.create_facilities("New York", @ny_data)
+
+      expect(ny_facilities).to be_an(Array)
+      expect(ny_facilities.first).to be_a(Facility)
+      expect(ny_facilities.first.name).to eq("LAKE PLACID")
+    end
+
+    it 'creates Facility objects for Missouri using the dynamic method' do
+      mo_facilities = @facility_factory.create_facilities("Missouri", @mo_data)
+
+      expect(mo_facilities).to be_an(Array)
+      expect(mo_facilities.first).to be_a(Facility)
+      expect(mo_facilities.first.name).to eq("Cameron")
     end
   end
   
-  describe '#full_address helper method' do
-
-    it 'builds a full address string from the raw using the full_address helper method' do
-      @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
-      
-      raw_location_data = @co_dmv_office_locations[0]
-      
-      expect(@facility_factory.full_address(raw_location_data)).to eq("#{@co_dmv_office_locations[0][:address_li]} #{@co_dmv_office_locations[0][:address__1]} #{@co_dmv_office_locations[0][:city]} #{@co_dmv_office_locations[0][:state]} #{@co_dmv_office_locations[0][:zip]}")
-      expect(@facility_factory.full_address(raw_location_data)).to eq("2855 Tremont Place Suite 118 Denver CO 80205")
-    end    
-  end
-       
+  #testing state-specific raw and transformed data separately from dynamic method above
   describe 'raw Colorado DMV Office Locations data' do
     
     before(:each) do
@@ -114,7 +123,7 @@ RSpec.describe FacilityFactory do
   
     before(:each) do
       @co_dmv_office_locations = DmvDataService.new.co_dmv_office_locations
-      @colorado_facilities = @facility_factory.create_co_facilities(@co_dmv_office_locations)
+      @colorado_facilities = @facility_factory.create_facilities("Colorado", @co_dmv_office_locations)
   #binding.pry
       #for testing multiple elements at different index positions; this should avoid the first/last element and randomly pick one from the remaining elements
       #@random_middle_index = rand(1..@co_dmv_office_locations.length - 2)
@@ -126,6 +135,8 @@ RSpec.describe FacilityFactory do
     it 'creates CO facility objects correctly' do
       expect(@colorado_facilities).to be_an(Array)
       expect(@colorado_facilities[0]).to be_a(Facility)
+      expect(@facility_factory.create_facilities("Colorado", @co_dmv_office_locations)[0]).to be_a(Facility)
+
     end
 
     it 'correctly transforms the first facility_record object' do
@@ -247,7 +258,7 @@ RSpec.describe FacilityFactory do
   
     before(:each) do
       @ny_dmv_office_locations = DmvDataService.new.ny_dmv_office_locations
-      @new_york_facilities = @facility_factory.create_ny_facilities(@ny_dmv_office_locations)
+      @new_york_facilities = @facility_factory.create_facilities("New York", @ny_dmv_office_locations)
   #binding.pry
       #for testing multiple elements at different index positions; this should avoid the first/last element and randomly pick one from the remaining elements
       @random_middle_index = rand(1..@ny_dmv_office_locations.length - 2)
@@ -385,7 +396,7 @@ RSpec.describe FacilityFactory do
   
     before(:each) do
       @mo_dmv_office_locations = DmvDataService.new.mo_dmv_office_locations
-      @missouri_facilities = @facility_factory.create_mo_facilities(@mo_dmv_office_locations)
+      @missouri_facilities = @facility_factory.create_facilities("Missouri", @mo_dmv_office_locations)
   #binding.pry
       #for testing multiple elements at different index positions; this should avoid the first/last element and randomly pick one from the remaining elements
       #@random_middle_index = rand(1..@mo_dmv_office_locations.length - 2)
