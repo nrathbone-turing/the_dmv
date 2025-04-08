@@ -20,26 +20,45 @@ RSpec.describe FacilityFactory do
 
     it 'creates Facility objects for Colorado using the dynamic method' do
       co_facilities = @facility_factory.create_facilities("Colorado", @co_data)
+      
+      #partial string matches using the .find method on the arrays of hashes for the raw and transformed data
+      raw_location_data = @co_data.find { |record| record[:dmv_office] == "DMV Tremont Branch" }
+      facility_record = co_facilities.find { |facility| facility.name == "DMV Tremont Branch" }
 
       expect(co_facilities).to be_an(Array)
-      expect(co_facilities.first).to be_a(Facility)
-      expect(co_facilities.first.name).to eq("DMV Tremont Branch")
+      
+      #additional tests for dynamically positioned elements based on new logic
+      expect(facility_record).to be_a(Facility)
+      expect(facility_record.name).to eq(raw_location_data[:dmv_office])
+      expect(facility_record.phone).to eq(raw_location_data[:phone])
+      expect(facility_record.address).to include(raw_location_data[:city])
+
     end
 
     it 'creates Facility objects for New York using the dynamic method' do
       ny_facilities = @facility_factory.create_facilities("New York", @ny_data)
+      raw_location_data = @ny_data.find { |record| record[:office_name] == "LAKE PLACID" }
+      facility_record = ny_facilities.find { |facility| facility.name == "LAKE PLACID" }
 
       expect(ny_facilities).to be_an(Array)
-      expect(ny_facilities.first).to be_a(Facility)
-      expect(ny_facilities.first.name).to eq("LAKE PLACID")
+
+      expect(facility_record).to be_a(Facility)
+      expect(facility_record.name).to eq(raw_location_data[:office_name])
+      expect(facility_record.phone).to eq(raw_location_data[:public_phone_number])
+      expect(facility_record.address).to include(raw_location_data[:city])
     end
 
     it 'creates Facility objects for Missouri using the dynamic method' do
       mo_facilities = @facility_factory.create_facilities("Missouri", @mo_data)
+      raw_location_data = @mo_data.find { |record| record[:name] == "Cameron" }
+      facility_record = mo_facilities.find { |facility| facility.name == "Cameron" }
 
       expect(mo_facilities).to be_an(Array)
-      expect(mo_facilities.first).to be_a(Facility)
-      expect(mo_facilities.first.name).to eq("Cameron")
+
+      expect(facility_record).to be_a(Facility)
+      expect(facility_record.name).to eq(raw_location_data[:name])
+      expect(facility_record.phone).to eq(raw_location_data[:phone])
+      expect(facility_record.address).to include(raw_location_data[:city])
     end
   end
   
